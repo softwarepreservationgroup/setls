@@ -1,0 +1,286 @@
+SETLS V2.1 Grammar
+
+Keywords***
+CASE    CONST   CONT    CONTINUE        DO      DOING   
+ELSE    ELSEIF  END     EXISTS  EXPR    FOR     FORALL  
+IF      INIT    LOOP    NOTEXISTS       OF      PASS    
+PRINT   PRINTA  PROC    PROCEDURE       PROG    PROGRAM
+QUIT    READ    READA   RETURN  STEP    STOP    TERM
+THEN    UNTIL   VAR     WHILE   YIELD
+
+Special token classes (partial listing)***
+tok_from        FROM  FROMB  FROME
+tok_uop         ABS  ARB  DOMAIN  RANGE  STR  TYPE  VAL  #
+                   EVEN  ODD  POW  CHAR  RANDOM
+tok_not         NOT  is_atom  is_boolean  is_string  is_set
+                   is_map  is_tuple
+tok_expon       **  NPOW
+tok_mulop       DIV  MOD  *
+tok_bop         LESS  LESSF  WITH  MAX  MIN
+tok_relop       INCS  NOTIN  SUBSET  /=  <  <=  >  >=
+tok_imp         IMP  ->
+tok_assign      :=
+tok_assignop    +:=  -:=  *:=  WITH:=  (etc.)
+tok_such        ST  |  WHERE
+tok_reserved    TRUE  FALSE  DATE  TIME  NEWAT  OM  EOF
+
+
+Grammar Rules***
+--
+--  Program Structure
+--
+Compilation_Unit
+                ::=  Simple_Program
+Simple_Program  ::=  Program_Declarations Body Routine_List Program_Tail
+Program_Declarations  
+                ::=  Program_Header Routine_Predeclarations Declarative_Part
+Program_Header  ::=  PROGRAM tok_id ;
+Routine_Predeclarations
+                ::=  Routine_Predeclarations Routine_Predeclaration
+                |    %empty
+Body            ::=  Statement_Block ;
+--
+--  Declarations
+--
+Declarative_Part
+                ::=  Declarative_Part Declaration_Part
+                |    %empty
+Routine_List    ::=  Routine_List Routine
+                |    %empty
+Program_Tail    ::=  END ;
+                |    END PROGRAM ;
+Declaration_Part
+                ::=  Declaration_Item ;
+Declaration_Item
+                ::=  Var_Declaration_Section
+                |    Const_Declaration_Section
+                |    Init_Declaration_Section
+Const_Declaration_Section
+                ::=  CONST Constant_Declaration_List
+Constant_Declaration_List
+                ::=  Constant_Declaration_List , Constant_Declaration
+                |    Constant_Declaration
+Constant_Declaration
+                ::=  tok_id = Constant
+Var_Declaration_Section
+                ::=  VAR Id_List
+Init_Declaration_Section
+                ::=  INIT Init_Declaration_List
+Init_Declaration_List
+                ::=  Init_Declaration_List , Init_Declaration
+                |    Init_Declaration
+Init_Declaration
+                ::=  tok_id := Constant
+Routine_Predeclaration
+                ::=  PROCEDURE Procedure_Predecl_List ;
+Procedure_Predecl_List
+                ::=  Procedure_Predecl_List , Procedure_Predecl_Name
+                |    Procedure_Predecl_Name
+Procedure_Predecl_Name
+                ::=  tok_id
+Routine         ::=  Procedure_Header Procedure_Body
+Procedure_Header
+                ::=  PROCEDURE tok_pname Argument_List ;
+Argument_List   ::=  ( Formal_List )
+                |    ( )
+                |    %empty
+Formal_List     ::=  Formal_List , Formal
+                |    Formal
+Formal          ::=  tok_id
+Procedure_Body  ::=  Declarative_Part Statement_List Procedure_Tail ;
+Procedure_Tail  ::=  END
+                |    END PROCEDURE
+--
+--  Statements
+--
+Statement_Block ::=  Statement_Block ; Statement
+                |    Statement
+Statement_List  ::=  Statement_Block ;
+Statement       ::=  If_Statement
+                |    Loop_Statement
+                |    Case_Statement
+                |    Yield_Statement
+                |    Return_Statement
+                |    Continue_Statement
+                |    Quit_Statement
+                |    Pass_Statement
+                |    Stop_Statement
+                |    Procedure_Call_Statement
+                |    Store_Value_Statement
+                |    Input_Output_Statement
+If_Statement    ::=  IF Expression THEN Statement_List Elseif_Stmt_List
+Elseif_Stmt_List
+                ::=  ELSEIF Expression THEN Statement_List Elseif_Stmt_List
+                |    Opt_Else_Stmt End_If
+Opt_Else_Stmt   ::=  ELSE Statement_List
+                |    %empty
+End_If          ::=  END
+                |    END IF
+Case_Statement  ::=  CASE Expression OF Case_Stmt_Body
+Case_Stmt_Body  ::=  Case_Tag Statement_Block Case_Stmt_List
+Case_Stmt_List  ::=  ; Case_Stmt_Body
+                |    ; Opt_Else_Stmt End_Case
+Case_Tag        ::=  ( Constant_List ) :
+End_Case        ::=  END
+                |    END CASE
+Yield_Statement ::=  YIELD Expression
+Return_Statement
+                ::=  RETURN Expression
+                |    RETURN
+Continue_Statement
+                ::=  CONTINUE
+Quit_Statement  ::=  QUIT
+Stop_Statement  ::=  STOP
+Pass_Statement  ::=  PASS
+Procedure_Call_Statement
+                ::=  Procedure_Call
+Procedure_Call  ::=  Procedure_Name Parameter_List
+Procedure_Name
+                ::=  tok_pname
+Parameter_List  ::=  ( Expression_List )
+                |    ( )
+                |    %empty
+Store_Value_Statement
+                ::=  Lhs := Expression
+                |    Lhs tok_assignop Expression
+                |    Lhs tok_from Name
+Input_Output_Statement
+                ::=  tok_print Parameter_List
+                |    READ ( Name_List )
+                |    READA ( Expression , Name_List )
+Signed_Number   ::=  Sign tok_int
+Sign            ::=  +
+                |    -
+Literal         ::=  Signed_Number
+                |    tok_str
+                |    tok_int
+Constant        ::=  tok_id
+                |    Literal
+Constant_List   ::=  Constant_List , Constant
+                |    Constant
+Id_List         ::=  Id_List , tok_id
+                |    tok_id
+Loop_Statement  ::=  LOOP Loop_Iterator DO Statement_List End_Loop
+                |    ( Loop_Iterator ) Statement_List End_Loop
+Loop_Iterator   ::=  FOR Iterator
+                |    Full_Iterator
+End_Loop        ::=  END
+                |    END LOOP
+Full_Iterator   ::=  Opt_Init Opt_Doing Opt_While Opt_Step Opt_Until Opt_Term
+Opt_Init        ::=  INIT Statement_List
+                |    %empty
+Opt_Doing       ::=  DOING Statement_List
+                |    %empty
+Opt_While       ::=  WHILE Expression
+                |    %empty
+Opt_Step        ::=  STEP Statement_List
+                |    %empty
+Opt_Until       ::=  UNTIL Expression
+                |    %empty
+Opt_Term        ::=  TERM Statement_List
+                |    %empty
+Iterator        ::=  Simple_Iterator_List tok_such Expression
+                |    Simple_Iterator_List
+Simple_Iterator_List
+                ::=  Simple_Iterator_List , Simple_Iterator
+                |    Simple_Iterator
+Simple_Iterator ::=  Name IN Expression
+Existential_Expression
+                ::=  EXISTS Simple_Iterator tok_such Expression
+                |    NOTEXISTS Simple_Iterator tok_such Expression
+Universal_Expression
+                ::=  FORALL Simple_Iterator tok_such Expression
+--
+--  Sets & Tuples
+--
+Set_Former      ::=  { Former_Inside }
+                |    { } 
+Tuple_Former    ::=  [ Former_Inside ]
+                |    [ ]
+Former_Inside   ::=  Expression
+                |    Expression Former_Extension
+                |    Former_Iterator
+Former_Extension
+                ::=  : Iterator
+                |    , Expression_List
+                |    , Former_Progression
+                |    tok_dotdot Expression
+Former_Iterator ::=  Fterm IN Hterm tok_such Expression
+Former_Progression
+                ::=  Expression tok_dotdot Expression
+Expression_List ::=  Expression_List , Expression
+                |    Expression
+--
+--  Expressions
+--
+Expression      ::=  Aterm
+                |    If_Expression
+                |    Expression_Block
+                |    Case_Expression
+                |    Existential_Expression
+                |    Universal_Expression
+                |    Assignment_Expression
+Aterm           ::=  Aterm tok_imp Bterm 
+                |    Bterm 
+Bterm           ::=  Bterm OR Dterm
+                |    Dterm
+Dterm           ::=  Dterm AND Eterm
+                |    Eterm
+Eterm           ::=  NOT Eterm
+                |    Fterm
+Fterm           ::=  Fterm tok_relop Hterm
+                |    Fterm = Hterm
+                |    Fterm IN Hterm
+                |    Hterm
+Hterm           ::=  Hterm + Iterm
+                |    Hterm - Iterm
+                |    Hterm tok_bop Iterm
+                |    Iterm
+Iterm           ::=  Iterm tok_mulop Jterm
+                |    Jterm
+Jterm           ::=  Jterm tok_cmp_op Kterm
+                |    Kterm
+Kterm           ::=  Lterm tok_expon Kterm
+                |    Lterm
+Lterm           ::=  tok_uop Lterm
+                |    - Lterm
+		|    tok_cmp_op Lterm
+                |    Primary
+Primary         ::=  tok_int
+                |    Name
+                |    tok_reserved
+                |    Procedure_Call
+                |    tok_str
+                |    ( Expression )
+                |    Set_Former
+                |    Tuple_Former
+                |    Set_Former Subscript_List
+                |    Tuple_Former Subscript_List
+                |    ( Expression ) Subscript_List
+Lhs             ::=  Name
+Name_List       ::=  Name_List , Name
+                |    Name
+Name            ::=  tok_id
+                |    Selected_Name
+Selected_Name   ::=  tok_id Subscript_List
+Subscript_List  ::=  Subscript_List Subscript
+                |    Subscript
+Subscript       ::=  ( Expression )
+                |    { Expression }
+                |    ( Expression .. Expression )
+                |    ( .. Expression )
+                |    ( Expression .. )
+Assignment_Expression
+                ::=  Lhs := Expression
+                |    Lhs tok_assignop Expression
+If_Expression   ::=  IF Expression THEN Expression Else_Expr_List
+Else_Expr_List  ::=  ELSEIF Expression THEN Expression Else_Expr_List
+                |    Opt_Else_Expr END
+Opt_Else_Expr   ::=  ELSE Expression
+                |    %empty
+Case_Expression ::=  CASE Expression OF Case_Expr_Body
+Case_Expr_Body  ::=  Case_Tag Expression Case_Expr_List
+Case_Expr_List  ::=  , Case_Expr_Body
+                |    ELSE Expression END
+Expression_Block
+                ::=  EXPR Statement_List END

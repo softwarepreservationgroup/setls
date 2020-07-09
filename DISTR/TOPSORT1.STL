@@ -1,0 +1,19 @@
+program topsort1;
+proc tsort1;
+  g:= {[1,4],[1,2],[2,4],[3,4],[2,3]};
+  nodes := domain g + range g;
+  sorted := tsort1(g,nodes);
+  print('Sorted list: ',sorted);
+
+procedure tsort1(g,nodes);
+           $topological sorting procedure, recursive form
+  return
+    if exists n in nodes | n notin range g then
+      [n]+tsort1(g lessf n,nodes less n)
+    else
+      []
+    end;
+end proc;
+
+end prog;
+

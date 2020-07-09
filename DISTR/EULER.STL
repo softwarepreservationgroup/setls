@@ -1,0 +1,45 @@
+$Sample program - Chapter 11.1
+program euler;                  $ Eulerian path construction
+proc euler_path,build_path;     $SETLS proc predeclarations
+g := {[1,2],[2,3],[3,4],[4,1],[4,2],[3,5],[3,6],[5,6]};
+print('initial graph: ',g);
+g +:= {[y,x]: [x,y] in g};      $form undirected graph
+print('Euler path: ',euler_path(g));
+
+proc euler_path(g);             $constructs eulerian path for graph g
+  nodes := domain g;            $all nodes in the graph
+    if #(odds := {x in nodes | odd(#g{x})}) > 2 then
+      print('too many odd ordered nodes');
+      return om;                $since more than two nodes are
+    end if;                     $touched by an odd number of edges
+
+        $odds is the set of all nodes of g that are touched by
+        $an odd number of edges
+
+    x:= (arb odds) ? arb nodes; $pick a node of odds if possible
+                                $otherwise pick any node of g
+    [start_p,g] := build_path(x,g);
+    path := [x] + start_p;
+
+    (while exists z = path(i) | g{z}/={})
+      [new_p,g] := build_path(z,g);     $insert new section into path
+      path := path(1..i) + new_p + path(i+1 ..);
+    end;
+
+    return path;
+end proc;
+
+proc build_path(x,g);           $builds maximal path section starting
+                                $at x, and deletes all edges traversed
+  p := [];
+  (while (y := arb g{x}) /= om) $while there exists an edge leaving
+                                $the last point traversed
+     p with:= y;                $extend path to traverse the edge
+     g -:= {[x,y],[y,x]};       $delete the edge just traversed
+     x := y;                    $step to y
+  end;
+  return [p,g];                 $since g modified, return both
+end proc;
+
+end prog;
+

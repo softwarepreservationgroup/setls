@@ -1,0 +1,19 @@
+program topsort2;
+proc tsort2;
+  g:= {[1,4],[1,2],[2,4],[3,4],[2,3]};
+  print('Sorted list: ',tsort2(g));
+
+proc tsort2(g);
+        $first iterative form of topological sort
+  nodes := domain g + range g;
+  t := [];     $initialize tuple to be returned
+  (while exists n in nodes | n notin range g)
+        t with:=n;
+        g lessf:=n;
+        nodes less:= n;
+  end;
+  return t;
+end proc;
+
+end prog;
+

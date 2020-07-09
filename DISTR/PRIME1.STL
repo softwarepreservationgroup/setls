@@ -1,0 +1,24 @@
+program primes;
+
+$ This program prints out a list of prime numbers
+$ which includes all primes less than 200
+
+  n := 200;
+  print('Primes less than ',n,' are:');
+  primes := {};         $ set of primes output so far
+  p := 2;               $ initial value to test
+  c := 0;
+
+$ Loop to test successive values
+
+  loop while p < n do   $ loop as long as p less than n
+    if notexists t in primes | p mod t = 0 then
+      print(p);
+      primes with:= p;
+      c := c + 1;
+    end if;
+    p := p + 1;
+  end loop;
+  print('Number of primes < 200 = ', c);
+end program;
+

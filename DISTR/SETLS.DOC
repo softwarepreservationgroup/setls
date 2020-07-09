@@ -1,0 +1,561 @@
+        
+        
+        
+        
+        
+        
+        
+                                SETLS USERS GUIDE
+
+                    A Short Introduction to the SETLS Compiler
+
+
+
+                            Written by J. VandeKopple
+
+                             for SETLS Version:  2.2
+                            on the IBM/PC with MS-DOS
+
+                               New York University
+
+                                     10/6/91
+
+
+                         Original SETLS source, Ver. 1.9
+                                 by Nigel Chapman
+                             The University of Leeds
+                                       1980
+
+
+        Contents
+
+        1)  Introduction
+            1.1)  Using SETLS
+            1.2)  Major Omissions and Restrictions
+        2)  Language Features
+            2.1)  Character Set & Keywords
+            2.2)  Basic Data Types
+            2.3)  Operators
+            2.4)  Statements
+            2.5)  Expressions
+            2.6)  Sets & Tuples
+            2.7)  Procedures
+            2.8)  Input/Output
+        3)  Error Messages
+        4)  Plans for Updates
+
+
+        For your questions, information, and suggestions -
+        SETLS is being maintained by:
+
+            Dr. J. VandeKopple
+            715 Broadway, 7th Floor
+            New York University
+            New York, NY  10003
+            (arpanet address:  vandekop@cs.nyu.edu)
+
+        1)  Introduction
+
+        This document is a short preliminary version designed to help
+        people get started in using SETLS.  It is not intended to be a 
+        language reference manual, but does describe differences between 
+        SETLS and the full SETL language definition.  There are a few 
+        sample programs on the distribution disk, but you may wish to 
+        refer to "Programming with Sets:  An Introduction to SETL" by 
+        Schwartz, Dewar, Dubinsky, & Schonberg (Springer-Verlag, 1986) 
+        for a full language description.
+        
+        The system consists of a translation phase and an execution 
+        phase.  The translation phase converts a SETLS source program 
+        into an internal code sequence of code blocks (in the form of 
+        indirect threaded code, based on the design for Macro SPITBOL).  
+        Then the execution phase interprets and executes the generated 
+        code words.  
+
+        1.1)  Using SETLS
+
+        After creating your SETLS source program (say TEST.STL) as ASCII 
+        text with your editor (a .STL file extension is assumed by 
+        SETLS), it is submitted to SETLS in the following way: 
+
+                SETLS source,list,exec
+
+        e.g.    SETLS TEST.STL,TEST.LST,TEST.EXE
+
+        Since the file extensions shown are defaults, they may be 
+        omitted.  You may also use PRN or CON to select the printer or 
+        console as the listing device.  Use of CON may not be 
+        satisfactory, however, as the output of execution (by PRINT 
+        statements) is also sent to the console.  And you may use NUL to 
+        omit one of the parameters.  If you only enter the source 
+        parameter, you will be asked if you wish to select the defaults 
+        (with .LST and .EXE extensions) for the listing and exec 
+        parameters.  A semicolon can be used to select these defaults 
+        automatically.  If the executable .EXE file is desired (a copy of 
+        the code and data are saved), the /NX switch (compile but not 
+        execute) must be used.  Without /NX, no .EXE file will be 
+        created.  For example: 
+
+                SETLS TEST;         uses defaults TEST.LST, no .EXE
+                SETLS TEST,NUL;     no listing file, no .EXE
+                SETLS TEST/NX;      TEST.LST, executable TEST.EXE created
+
+        If the TEST.EXE file is created, it is executed at the DOS level 
+        by typing the command TEST (as a normal DOS .EXE file).  With 
+        this .EXE file, execution I/O defaults to the terminal.
+
+        The compiler switches are:
+                /B=nn           Buffer size (default 4K)
+                /C=nn           Characters per line in listing (def 80)
+                /L=nn           Lines per page in listing (def 60)
+                /S=nn           Stack size (def 4K)
+                /NL             No repeat of source in listing file
+                /NS             Suppress compile and execute statistics
+                /NX             Suppress execution, generate .EXE file
+
+        If you wish to pass arguments from your command line to your 
+        program, refer to the HOST(1) function.
+
+        1.2)  Major Omissions and Restrictions
+
+        While more detailed information on language restrictions are 
+        included in the following sections, the major omissions from 
+        SETLS are:
+
+                Real numbers as data type
+                modules and directories
+                representation sub-language and all REPR declarations
+                macros
+                backtracking
+                user-defined operators
+                arbitrary precision integer arithmetic
+                labels and GoTo
+                refinements
+
+        Additional restrictions to the language include:
+
+                Procedures must be pre-declared.  After the program 
+                heading, include a declaration of the form
+                           PROC <namelist>;
+                where <namelist> is a list of procedure names, separated 
+                by commas.
+
+                Procedures cannot have a variable number of formal 
+                parameters using * in the parameter list.
+
+                Only the default (pass by value) parameter-passing 
+                mechanism is supported; RD, RW, and WR are not 
+                recognized.  
+
+                (Constant) sets and tuples are not permitted in CONST and 
+                INIT declarations or CASE tags.  Only constant integers 
+                and strings are supported.
+
+                The shorthand m(a,b,c) for multi-dimensional map and 
+                tuple references is not allowed.
+
+                While the full facility for copying tokens from the head 
+                of iterators is not supported at the END of the block, 
+                the following are permitted:  END IF, END CASE, END LOOP, 
+                END PROC, and END PROG.  You may use comments to annotate 
+                the end, such as 
+                        (FOR x in S) ... END; $ FOR x in S
+                but the commented tokens will not be checked.
+
+                Similarly, no tokens may follow QUIT or CONTINUE.
+
+                CASE statements and expressions are restricted to the 
+                form CASE <exp> OF ... with constant tags.
+
+                <lhs1> FROM <lhs2> may be used only as a statement, not 
+                within an expression.
+
+                FOR and FORALL are not synonymous:  FOR is used in loops, 
+                FORALL in quantifiers.
+
+
+        2)  Language Features
+
+        2.1)  Character Set & Keywords
+
+        Character Set
+
+            The following characters are used by SETLS:
+
+                + - * = ~ # / < > ( ) { } [ ] : , ; . | ' _ $ ?
+
+                a to z, A to Z, 0 to 9
+
+            The language includes the following 2 or 3 character tokens:
+
+                :=  **  /=  >=  <=  ->  ..  ...  (/  /)  <<  >>  /\  \/
+
+        Identifiers & Keywords; Character Case
+                The compiler is insensitive to case.  You may type 
+                keywords and identifiers in either upper or lower case.  
+                Identifiers may contain the underline character (_).  In 
+                the compiler listing, keywords will appear in upper case, 
+                identifiers in lower case, regardless of the case used in 
+                the source file.  
+
+        Comments
+                Characters appearing on a line of source code after the 
+                dollar sign '$' character are ignored.
+
+        The keywords in SETLS are:
+
+        ABS     AND     ANY     ARB     ASSERT  BREAK   CASE    CHAR
+        CONST   CONT    CONTINUE        DATE    DIV     DO      DOING
+        DOMAIN  ELSE    ELSEIF  END     EOF     EVEN    EXISTS  EXPR
+        FALSE   FOR     FORALL  FROM    FROMB   FROME   GET     HOST
+        IF      IMP     IN      INCS    INIT    INPUT   IS_ATOM IS_BOOLEAN
+        IS_MAP  IS_SET  IS_STRING       IS_TUPLE        LEN     LESS
+        LESSF   LOOP    LPAD    MATCH   MAX     MIN     MOD     NEWAT
+        NOT     NOTANY  NOTIN   NOTEXISTS       NPOW    ODD     OF
+        OM      OR      OUTPUT  PASS    POW     PUT     PRINT   PRINTA
+        PROC    PROCEDURE       PROG    PROGRAM QUIT    RANDOM  RANGE
+        RANY    RBREAK  READ    READA   READL   RETURN  RLEN    RMATCH
+        RNOTANY RPAD    RSPAN   SPAN    ST      STEP    STOP    STR
+        SUBSET  TERM    THEN    TIME    TRUE    TYPE    UNTIL   VAL
+        VAR     WHERE   WHILE   WITH    YIELD
+
+        The following synonyms are permitted:
+
+                CONTINUE    CONT                        IMP     ->
+                PROCEDURE   PROC                        AND     /\
+                PROGRAM     PROG                        OR      \/
+                [ and ]     (/ and /)                   NOT     ~
+                { and }     << and >>                   ..      ...
+                |           ST       WHERE
+
+        2.2)  Basic Data Types
+
+        Implemented
+                Atoms
+                        For unique values, these appear as #0, #1, etc. 
+                        on output.
+                OM
+                Integers
+                        16 bit signed numbers only, hence in the range 
+                        from -32767 to 32767.
+                Strings
+                        Enclosed in single quotes.  String length is 
+                        limited to MXLEN, which is about 9000.  This is 
+                        required for the garbage collector, which needs 
+                        to distinguish between storage block sizes and 
+                        dynamic memory addresses.
+                Booleans
+                        While values are TRUE and FALSE, these will 
+                        appear as #T and #F upon output.
+                Tuples
+                        Either the [ and ] may be used or (/ and /).
+                Sets
+                        Either { and } or << and >>.
+                        For set and tuple formers, either | or ST may be
+                          used for SUCH THAT.
+
+        NOT Implemented
+                Real numbers
+
+
+        2.3)  Operators
+        
+        The following is a complete list of the operators implemented in 
+        SETLS (synonyms are in parentheses):
+        Unary
+                ABS     ARB     CHAR    DOMAIN  EVEN    IS_ATOM IS_BOOLEAN 
+                IS_MAP  IS_SET  IS_STRING       IS_TUPLE        NOT     
+                ODD     POW     RANDOM  RANGE   STR     TYPE    VAL
+                #  +  -
+        Binary
+                AND     DIV     FROM    FROMB   FROME   IMP (->)
+                IN      INCS    LESS    LESSF   MAX     MIN     MOD     
+                NOTIN   NPOW    OR      SUBSET  WITH    +  -  *  **  ?
+                =  /=  <  >  <=  >=
+
+        Compound Operators:  of the form   binop/
+                May be used in unary form, such as +/{1,2,3}, or in 
+                binary form, as in 0 +/ {1,2,3}.  Precedence for the 
+                binary form is below exponents and above multiply.
+
+        Note that the TYPE operator returns an upper case string, such as 
+            'SET', 'STRING', etc.
+        The MOD operator for sets (for symmetric difference) is not yet 
+            implemented.
+
+        2.4)  Statements
+
+        ASSERT
+                Requires Boolean-valued expression as argument.  Program 
+                    terminates if false.
+        Assignment
+                A left hand side may be a name, subscripted name, or 
+                    slice (such as t(2..4) := a;), but parallel 
+                    assignments like [x,y] := [1,2]; are also supported.  
+                FROM, FROMB, and FROME are used in statements only, not 
+                    in expressions.  
+                SETLS permits multiple assignments such as  x := y := 3;
+                    but does not permit expressions on a left-hand side, 
+                    such as x := 1 + y := 3;
+                SETLS supports assignment operators, such as +:=, -:=,
+                    WITH:=, etc. for infix operators.
+        CASE statement
+                Restricted to the form CASE <exp> OF, with constant tags 
+                    (SETLS does not permit constant sets or tuples).
+        CONTINUE
+                SETLS does not support following tokens.
+        IF-THEN, IF-THEN-ELSE
+        LOOP statement
+                Either form:  LOOP <loopiter> DO  or  ( <loopiter> ) may 
+                    be used.  You may not assign to a variable used as 
+                    the expression part of an iterator.  The end is 
+                    restricted to END or END LOOP (not end while, etc.).  
+                Map iterators (for b = m(a)) and those of the form
+                    (for [a,b] in S) are supported.
+                The full iterator permits INIT, DOING, WHILE, STEP, 
+                    UNTIL, and TERM clauses.
+        PASS
+        Procedure calls and I/O
+                See sections 2.7 and 2.8.
+        QUIT 
+                SETLS does not support trailing tokens.
+        RETURN
+                If the argument <expression> is omitted, OM is returned.
+        STOP 
+        YIELD
+                Requires <expression> as argument.
+
+        2.5)  Expressions
+
+        While not an exhaustive list, the following indicates 
+        restrictions or departures from the standard SETL grammar.  
+
+        EXPR block
+                This is supported.  The needed YIELD statement requires 
+                    an <expression> as argument.
+
+        CASE expression
+                Only the CASE <exp> OF form is supported, with constant 
+                    tags (where constant sets and tuples are not 
+                    permitted).
+                For CASE expressions, only END is permitted, not END CASE.
+
+        To complete an IF expression, only END is permitted, not END IF.
+
+        Tuple and string slices are supported in t(i..j), t(..j), and 
+        t(i..) forms.
+
+        For multi-dimensional map and tuple references such as 
+        m(a)(b)(c), the shorthand m(a,b,c) is not supported.
+
+        FROM may be only used in a statement, not in an expression.
+
+        2.6)  Sets & Tuples
+
+        SETLS supports enumerated sets and tuples elements, such as:
+                s := {1, 3, 6};
+                s := {1 .. 10};
+                t := [1, 3 .. 9];
+        Tuple slices have been included in this update, including 
+        references to and assignment to slices, such as:
+                t := t(3 .. 6);
+                t(3 .. 4) := [6,4,5];
+
+        While most standard set formers are supported, some of the 
+        shorthand extensions are not (see attached grammar).  For 
+        example, 
+                {x in s| x > 2} is okay, where s is some set.  
+                {[y,x]: [x,y] in m}, where m is a map, is okay.
+                {y: y = m(x)} is okay for map m.
+                {x*y: x,y in t } must be rewritten as 
+                        {x*y: x in t, y in t}
+
+        2.7)  Procedures
+
+        Procedures must be predeclared.  This is done in a statement, 
+        such as
+                PROCEDURE P1,P2;
+        in which all procedure names are listed (without its parameter 
+        list).  This statement should be placed after your program 
+        statement and before any VAR declarations.  For example: 
+                program main;
+                procedure p1,p2,p3;
+                var g, nodes;
+                $ The main program follows
+                $ After it, include the procedure declarations
+
+        SETLS only supports the default (pass by value) parameter passing 
+        mechanism, and will not recognize RD, RW, or WR.  If there are 
+        too few actual parameters, the remaining formal parameters will 
+        be assigned OM.  If there are too many actuals, those remaining 
+        after the formals are assigned will be ignored.  In lieu of RW 
+        parameters, information could be passed using side effects via a 
+        global variable (included in a VAR declaration in the main 
+        program).  
+
+        Standard Procedures Provided:
+                DATE
+                        Returns a 20 character string of the format:  
+                        '12-Jan-1989 14:02:15'
+
+                TIME
+                        The elapsed time returned is in deciseconds, 
+                        hence a value of 126 should be interpreted as 
+                        12.6 seconds.  Since the integer limit is 32767, 
+                        timing of events longer than 3276.7 seconds can
+                        cause confusion.
+                NEWAT
+                        Generates a new unique atom.  Upon output, these 
+                        will be represented as #0, #1, etc.
+
+        The string primitives are available (See Chapter 5 of SETL book):
+                SPAN            RSPAN
+                ANY             RANY
+                BREAK           RBREAK
+                LEN             RLEN
+                MATCH           RMATCH
+                NOTANY          RNOTANY
+                LPAD            RPAD
+
+        The HOST function (like that in Macro Spitbol) is supported:
+                HOST()   returns your SETLS system identification string
+                HOST(1)  returns the parameter string from the command 
+                    line.  For example if you type:  
+                        SETLS PROG;hello  
+                    then HOST(1) returns the string 'hello'.  If a 
+                    semicolon is not used on the command line, then a 
+                    space is required before the command argument.  If 
+                    the command parameter is omitted, HOST(1) returns the 
+                    null string.
+                Other HOST functions will be supported soon.
+
+        2.8)  Input/Output
+
+        Standard input and output are associated with the terminal, hence 
+        READ and PRINT provide an interactive mode.  File I/O uses 
+        primitives much like standard SETL, using INPUT and OUTPUT (in 
+        place of OPEN), READA, and PRINTA.  Since SETLS shares the 
+        SPITBOL routines, however, some aspects resemble that system.
+
+        INPUT and OUTPUT
+                To open a file for input or output, the form of the 
+                function call is: 
+                        INPUT(filename) 
+                        OUTPUT(filename) 
+                where the filename must be a string indicating the DOS 
+                file name, including drive and path, if desired.  For 
+                example:
+                        INPUT('test.dat');
+                        OUTPUT('c:\setls\test.out');
+                Note that this differs somewhat from the standard SETL 
+                call, for example:  OPEN('test.dat','TEXT-IN').  Refer to 
+                READA and PRINTA below for I/O calls.
+
+                An alternate form is available, which permits some 
+                flexibility.  In this case, an internal identifier may be 
+                associated with the DOS file name.  These calls are:
+                        INPUT(internal-id, external-name)
+                        OUTPUT(internal-id, external-name)
+                Both the internal and external names must be strings, 
+                with the external file name indicating the DOS file name, 
+                including drive and path, if desired.  For example: 
+                        INPUT('test.dat', 'c:\setls\test.dat');
+                        OUTPUT('outfile', 'test.out');
+                If an internal file identifier has already been 
+                associated with an external file, then an error occurs.  
+                Note that the call returns a boolean value, consistent 
+                with the SETL OPEN primitive, hence may be used in an 
+                expression, if desired.  
+
+        READ
+                The READ statement permits any list of names (including 
+                subscripted names) as arguments, such as:  READ (a,b(3)); 
+                Input defaults to the keyboard without any prompt (unless 
+                provided by your program using a PRINT statement).
+
+        READA
+                Used for file input, READA is similar to read.  The first 
+                argument, however, must be the filename indicated in a 
+                prior INPUT statement (or the internal-id, in the case of 
+                INPUT with two arguments).  For example:
+                        READA('test.dat',x,y);
+
+        READL
+                This is an addition to the language.  READL acts exactly 
+                like GET, but it reads input directly from the keyboard.  
+                Hence, READL(x,y) receives two successive input lines 
+                from the console and stores them in x and y respectively.
+
+        GET
+                GET permits one to read successive lines of input strings 
+                from a file.  As example, GET('test.dat',x) stores a line 
+                of input from the file into x.
+
+        PRINT
+                PRINT permits any list of expressions as arguments.  Output 
+                defaults to the terminal.  There is not at present a 
+                formatted output.  When a list of expressions is printed, 
+                they appear without separating spaces (unless the user 
+                inserts spaces in the list).  Then, after printing the 
+                list, the compiler sends a CR (carriage return), LF (line 
+                feed).  
+
+                For terminal output only, a trailing null character 
+                (ASCII 0) can be used to suppress the CR-LF.  Hence the 
+                output of 
+                        PRINT('Hello ',CHAR(0));
+                        PRINT('there!');
+                will be the single line:  
+                        Hello there!  
+                Be careful that the null character is the last in a print 
+                statement, because an earlier occurrence will suppress 
+                output of any further characters or arguments of that 
+                statement.  
+
+        PRINTA
+                The action is much like PRINT, except that the first 
+                argument must be a filename (or internal-id), as 
+                described above for READA.
+
+        PUT
+                PUT('test.out',x,y) would write the contents of x and y, 
+                which must evaluate to string type, as successive lines 
+                in the output file.
+
+        EOF and EOF(filename)
+                EOF is true if the last READ or READA has reached the end 
+                of the file, false otherwise.  For input from the 
+                terminal, you may use Control-Z to interactively indicate 
+                end of file.  As an option, SETLS also permits the 
+                alternate form EOF(filename), which is true only if the 
+                end of the specified file has been reached.
+
+        The primitive for closing a file has not yet been implemented.
+
+
+        3)  Error Messages
+
+        Compile time errors:  When syntax errors occur, the line 
+        containing the error will be printed on the console.  You may 
+        find it more useful to examine the listing file, which
+        contains those lines of source code which had been parsed 
+        so far.  A ? symbol will point out the location of the error.  
+        Unfortunately, the associated messages are generally not very 
+        specific.  Improvements are anticipated in updated versions.
+        
+        Run time errors:  The error message is generally useful, and 
+        includes the statement number of the problem (see the listing 
+        file for line and statement numbers).  Code for a profiler is 
+        available.  It may be useful to provide the version of SETLS with 
+        the profiler in the near future.  
+
+        4)  Plans for Updates 
+
+        Future versions of SETLS should include: 
+
+                The REAL data type with related operators & functions.
+
+                Improved diagnostics for syntax errors.
+
+                A 80386 version, which will permit 32 bit integers.
+

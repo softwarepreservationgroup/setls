@@ -1,0 +1,5 @@
+program prime2;
+   $ number is prime if no smaller integer divides it evenly
+   print({x:x in [2..200] | (notexists k in [2..x-1] | x mod k = 0)});
+end program;
+

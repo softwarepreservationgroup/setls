@@ -1,0 +1,122 @@
+DEWAR VISUAL EDITOR (DVED) - RELEASE NOTES
+
+This diskette contains version 6.02 of DVED, the three .COM files are identical
+and are provided to minimize the chance of losing the copy due to a disk error.
+
+DVED is a screen oriented editor for the IBM/PC. It requires 64K memory using
+DOS 1.1 or 96K using DOS 2.0 and either the color or monochrome display card.
+DVED is a product of Realia Inc., written by Robert B. K. Dewar, and is copy-
+righted (c), 1983 by Realia Inc. It is distributed at no charge, and you are
+encouraged to distribute copies of this program to other PC users. Copies of
+this program may not be sold or included as part of the distribution of any
+other product. However IBM PC clubs and similar organizations may distribute
+copies at a nominal charge for media and copying costs.
+
+The documentation for DVED is contained as part of the program, loading DVED
+with no parameters will enter the help facility which interactively provides the
+documentation of all DVED features. This help facility can also print a complete
+formatted reference manual if a printer is attached. If you want to get started
+trying out DVED right away, just try DVED filename to edit an existing file or
+create a new file. During an edit, pressing Ctrl-F1 makes the help facility
+available.
+
+One section of the documentation describes additional programs available from
+Realia Inc., including the other components of the DEWAR utilities. For further
+information, examine this part of the documentation, or write:
+
+   Robert B. K. Dewar			Realia Inc.
+   73 5th Ave,		      or	10 S. Riverside Plaza
+   New York, NY 10003			Chicago, IL 60606
+
+
+REVISION HISTORY
+
+V6.02 (September 14th, 1983)
+
+  Errors corrected
+
+    DELETE TO BUFFER malfunctioned in some situations
+    N command did not work correctly if a select range was active
+
+  Changes and new features
+
+    COB files are now expected to contain and generated with standard DOS
+     tabs (instead of the special tab stops previously implemented).
+    The default tab settings for COB files have been modified.
+    Mixed case mode is now activated by ALT-M and is active only for ASM and
+     COB files (the C command has been removed). For COB files, mixed case
+     mode is the default.
+    Tabs are set with ALT-T and cleared with ALT-C (the T command is still
+     available for specifying a complete set of tabs, F1 is no longer used).
+    The left margin is now set with ALT-L, F2 is no longer used.
+    The Ctrl-PgDn function is now ERASE PAGE rather than DELETE PAGE. The
+     difference is that remaining data is saved in the hold file, rather
+     than being permanently lost.
+
+V5.01 (August 8th, 1983)
+
+  Errors corrected
+
+    The hold file and buffer files were being allocated on the current drive,
+     instead of the output file drive.
+    Version 4.03 had become too large to run in a 64K machine, this is corrected
+     in version 5.01.
+
+  Changes and new features
+
+    Some changes have been made to improve performance on a COMPAQ. DVED worked
+     correctly on a COMPAQ, but caused unnecessary screen flickering (the COMPAQ
+     looks like a color controller to the software, but behaves like the IBM
+     monochrome display, so the flickering is not required). The new version
+     avoids the flickering.
+    The journal file is always on the current drive. This allows more control,
+     which is useful when using RAM disks (it may for example be desirable for
+     the journal file to be on a real disk all the time).
+    The insert function now avoids losing a non-blank character from the end of
+     the line. An insert attempt which would cause a character to be lost is
+     ignored and the alarm sounds. The same processing applies to the G and R
+     commands when the replacement string is longer than the search string. In
+     the case of the G command, if a replace fails, then the command is
+     terminated.
+    The mouse setup file has been changed (to use ALT 1-6, instead of ALT A-Z).
+    F2 is now used to set the left margin (it used to clear tabs)
+    F1 flips (sets/resets) the tab in the current column.
+
+V4.03 (August 1st, 1983)
+
+  Errors corrected
+
+    The normal DOS cursor was not always reset on a disk full condition.
+    The cursor was left in a strange position when a command was edited
+     following an error, it is now set to the first column of the command.
+    Disk space was not released when going backwards in a file, which
+     meant that an unnecessary out of space message could be obtained
+     when editing large files with large backwards movement.
+    A delete to buffer operation at the start of the file left unwanted
+    blank lines.
+
+  Changes and new features
+
+    The journal file is updated on a disk full condition, so that no keys
+     are lost in this case.
+    The journal file is now updated every 60 seconds by default. This update
+     period can be changed by patching a documented location.
+    G commands, and B,D and S coommands with a null key now terminate without
+     giving a key not found error message.
+    Indent new line is now Shift Enter, the PrtSc key generates ASCII asterisk
+     as in normal DOS mode.
+    The quit message stops blinking as soon as a yes response is given
+    Delete word is now allowed during command entry
+    The mixed case option (C command) now uses the left margin (auto-wrap)
+     column to test for the separator signalling an all lower case line.
+
+V4.02 (July 16th, 1983)
+
+  Errors corrected
+
+    The I=xxxxx count was not always displayed.
+    The journal file was sometimes deleted on a disk full condition.
+    The halt (Esc) key was not active during a search to a line number.
+    The COPY LINE function caused the contents of the buffer to be lost.
+    Search did not find strings to the left of the autowrap column.
+

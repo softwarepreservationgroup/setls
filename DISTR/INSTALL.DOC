@@ -1,0 +1,41 @@
+        SETLS v2.2 Installation Documentation
+
+             The files from your SETLS distribution disk just need to be 
+        copied to a user disk, then are ready for your use.
+
+
+        Hard Disk Installation
+
+             The SETLS files should normally be placed in a separate 
+        subdirectory on a hard disk.  To do this, after booting your 
+        system, just place your distribution disk in drive a:, then type 
+        the following DOS commands: 
+
+                cd \            - to make certain you're at the root
+                md setls        - creates the subdirectory
+                cd setls        - move into the new subdirectory
+                copy a:*.*      - copy all the files to your hard disk
+
+        In order to use SETLS, then, you may work within the setls 
+        subdirectory.  However, you may prefer to have your source files 
+        in another location.  To access SETLS, then, you should include 
+        the \setls subdirectory on your path, with a DOS command such as:
+
+                path c:\setls;c:\ed;c:\dos
+
+        Here it is assumed that your (ASCII) editor is in c:\ed and that 
+        you still want access to the DOS utilities in c:\dos.  Adjust 
+        these as needed to fit the subdirectory names on your hard disk.
+
+
+        Floppy disk installation
+
+             To run SETLS from a floppy disk, just COPY all the files 
+        from the distribution disk onto a formatted floppy disk.  If you 
+        want to save space on the disk, the only file absolutely 
+        necessary for execution is SETLS.EXE.  However, in order to be 
+        able to create your source files, you should also have your 
+        text editor on the floppy as well (If you use DVED, which is 
+        provided, you need the file DVED.COM).  The other files are 
+        documentation and examples (see the README file).  
+

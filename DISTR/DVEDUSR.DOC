@@ -1,0 +1,58 @@
+     Using Dved - Summary of Commands
+
+CTRL F1  Help
+
+Function Keys
+
+F1  not used		ALT F1	End edit
+F2  not used		ALT F2	Quit edit
+F3  Open line		ALT F3	Open indent line
+F4  Del l (to buffer)	ALT F4	Und l
+F5  Reformat line	ALT F5	Reformat paragraph
+F6  Select range	ALT F6	Unselect range
+F7  Copy from buffer	ALT F7	Clear buffer
+F8  Copy to buffer	ALT F8	Append to buffer
+F9  Duplicate char	ALT F9	Duplicate line
+F10 Duplicate field	ALT F10 Erase field
+
+Cursor Moves
+
+Arrows	  Move cursor	Home	Cursor home
+CTRL ->   Next word	Tab	Tab forward
+CTRL <-   Back word	^ Tab	Tab backward
+^ ->	  End of line	^ Up	Top of screen
+^ <-	  Beg of line	^ Down	Bot of screen
+Num +	  Next line
+
+Delete operations	Misc operations
+
+Del	  Del c 	ESC	    Enter command
+^ Del	  Del c in l	End	    Repeat Command
+Backspace Backsp del	Enter	    Enter line
+Num -	  Del w 	^ Enter     Indent line
+F4	  Del l (buf)	CTRL Enter  Split line
+CTRL End  Del Eol
+
+Insert & Copy
+
+Ins	  Insert mode
+^ Insert  Insert in line
+F3	  Open line
+CTRL PgDn Insert page
+^ Num +   Copy line
+^ Num -   Uncopy line
+PgDn	  Copy page
+PdUp	  Uncopy page
+
+
+Command Mode (first strike ESC)
+
+n	       Search for line n
+S 'str'        Search for string
+S/word	       Search for word
+B 'str'        Search back to string
+D n	       Del to line n
+Dstr	       Del to string
+R 'str' 'str2' Replace next str by str2
+G 'str' 'str2' Global replace str by str2
+

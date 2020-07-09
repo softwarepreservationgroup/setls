@@ -1,0 +1,13 @@
+program main;
+proc fact;
+n:=4;
+num:=fact(n);
+print(n,' factorial is: ',num);
+
+proc fact(n);
+ if n=1 then return 1;
+ else return n*fact(n-1);
+ end if;
+end proc;
+end prog;
+

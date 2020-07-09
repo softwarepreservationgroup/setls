@@ -1,0 +1,63 @@
+                        Quick Start Information for SETLS
+
+             The purpose of this document is to give you a quick 
+        introduction to the use of SETLS.  For installation information, 
+        see the file INSTALL.DOC.  And for a more detailed documentation 
+        on SETLS, please refer to the file USER.DOC.
+
+        Minimal files required for use of SETLS
+
+             First boot your system with MS-DOS.  I'll assume that you 
+        have already installed SETLS on either a floppy disk or hard 
+        disk.  Then execution requires that you have in your directory 
+        (or on your PATH) two things:
+
+        (1)  An ASCII editor
+             SETLS source programs must be simple ASCII text file.  The 
+        editor DVED (Dewar Visual EDitor - the file DVED.COM) is provided 
+        on the distribution disk for your convenience, if you wish to use 
+        it.  You may, of course, use EDLIN, PC-WRITE, or other editor 
+        which can create ASCII text.  If you use a word processor such as 
+        Microsoft Word, be certain that you do NOT save it as a formatted 
+        document, as the format codes will be interpreted by SETLS as 
+        errors.  
+
+        (2)  The SETLS Compiler
+             The file SETLS.EXE contains the entire Compiler/Interpreter.  
+        Once the SETLS source file is created, you only need this file to  
+        compile and execute.
+
+
+        Creating a Program
+
+             You must first create your source code with your text 
+        editor.  For this example, we will assume that DVED (the full-
+        screen editor provided on your disk) is being used.  The normal 
+        file extension for SETLS programs is .STL, hence we would start 
+        the editor by typing at the system A> or C> prompt:
+                                DVED HELLO.STL
+        Then at the editor screen, type in the following program:
+                        program hello;
+                          print ('Hello, world!');
+                        end;
+        To close the editing session and save the file, use Alt-F1.  If 
+        you check your directory, you should now have the file HELLO.STL.  
+        (Note:  There is documentation provided for DVED on the 
+        distribution disk.  Extensive help is also available while 
+        editing, by using Ctrl-F1).
+
+
+        Compiling-Executing your Program
+
+             To execute your program, just type the command:
+                                SETLS HELLO;
+        The use of the semicolon provides that the compiler listing file 
+        will automatically be placed in HELLO.LST.  The listing file will 
+        contain any error messages (should they occur), along with 
+        indications of line and statement numbers, to assist in finding 
+        the problem.  It will also provide statistics on both the compile 
+        and execution phases of SETLS.
+
+             For further information on the compiler options, please see 
+        the User's Guide for details.
+

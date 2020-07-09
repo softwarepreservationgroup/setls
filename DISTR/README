@@ -1,0 +1,42 @@
+        This diskette contains:
+
+        README -- This file, describing the contents of this disk.
+
+        SETLS.EXE -- the SETLS compiler.
+
+        INSTALL.DOC -- documentation regarding the installation of SETLS 
+            onto either a floppy disk or hard disk.  
+
+        START.DOC -- provides a quick introduction to the use of SETLS.
+
+        SETLS.DOC  -- This documentation provides an introduction to the 
+            features of the SETLS compiler, including differences from 
+            full SETL.  It also contains instructions on using the 
+            compiler.  
+
+        SETLSGRM.DOC -- This contains the SETLS grammar.  In case of 
+            syntax errors, this may be a useful resource.
+
+        As an introduction to the compiler, a number of .STL programs are 
+            included.  These samples include SETLS versions of some of 
+            the examples given in PROGRAMMING WITH SETS:  An Introduction 
+            to SETL, by Schwartz, Dewar, Dubinsky, and Schonberg.  The 
+            user may find it instructive to compare these programs with 
+            the originals, in order to see some of the variations from 
+            full SETL.  
+                PRIME1.STL      (Dewar - list prime numbers)
+                PRIME2.STL      (Sec. 2.4 - one line for primes)
+                EULER.STL       (Sec. 11.1 - find Euler path)
+                FACT.STL        (Sec. 4.4 - recursive factorial call)
+                TOPSORT1.STL    (Sec. 11.2 - topological sort, ver. 1)
+                TOPSORT2.STL    (Sec. 11.2 - topological sort, ver. 2)
+
+        DVED.COM -- Dewar Visual EDitor, a full-screen text editor, which
+            may be used to create your own SETLS source files.  This is
+            provided for your convenience, though you may use any ASCII 
+            text editor to create the .STL files.
+
+        DVED.DOC & DVEDUSR.DOC -- documentation and keypad summary for the
+            use of DVED.  Further help can be obtained during editing
+            by use of Ctrl-F1.
+
